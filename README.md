@@ -6,8 +6,7 @@ published preprints to journal articles via Crossref, and standardizes journal
 metadata — using the [pyzotero](https://github.com/urschrei/pyzotero), arXiv, and
 Crossref APIs.
 
-Originally a pile of Jupyter notebooks; reorganized into independent, dry-run-safe
-scripts that share a small helper package.
+Independent, dry-run-safe scripts over a small shared helper package.
 
 ## Setup
 
@@ -17,24 +16,17 @@ Requires [uv](https://docs.astral.sh/uv/) and Python ≥ 3.10.
 uv sync   # create the venv and install dependencies
 ```
 
-Then provide your Zotero credentials. Real environment variables take precedence
-over a `.env` file, so either works — **exporting environment variables is
-recommended**, since it also works when the skill runs from another directory:
+Set your Zotero credentials as environment variables (these win over `.env`, and
+work when the skill runs from any directory):
 
 ```bash
-export ZOTERO_API_KEY=...           # get one at https://www.zotero.org/settings/keys
-export ZOTERO_LIBRARY_ID=1234567    # your userID, shown on that same page
+export ZOTERO_API_KEY=...           # https://www.zotero.org/settings/keys
+export ZOTERO_LIBRARY_ID=1234567    # your numeric userID, same page
 export ZOTERO_LIBRARY_TYPE=user
-export CROSSREF_MAILTO=you@example.com   # optional: joins Crossref's faster "polite pool"
+export CROSSREF_MAILTO=you@example.com   # optional: Crossref polite pool
 ```
 
-Add those lines to your shell profile (`~/.zshrc`, `~/.bashrc`) to persist them.
-Or, when working inside this repo, use a local `.env` (gitignored — never commit
-it):
-
-```bash
-cp .env.example .env   # then edit it with the same keys
-```
+Or copy `.env.example` to `.env` (gitignored) and fill in the same keys.
 
 Verify it works:
 
@@ -44,9 +36,8 @@ uv run python -c "from zotcleanup import get_client; print(get_client().count_it
 
 ## Use as an agent skill (Claude Code / Codex)
 
-This repo bundles the `zotero-cleanup` agent skill (in `skills/`) and ships it as
-a plugin, so an AI coding agent can drive the pipeline for you. Install it once
-and the skill is available in any project.
+The `zotero-cleanup` skill (in `skills/`) ships as a plugin so an agent can drive
+the pipeline. Install it once; it's then available in any project.
 
 ### Claude Code
 
@@ -77,13 +68,12 @@ Claude Code).
 | Codex | `codex plugin marketplace upgrade zotcleanup` |
 | Manual install | `git pull` in the clone |
 
-The skill still needs the `zotcleanup` package installed (`uv sync`) and your
-Zotero credentials available (see [Setup](#setup)).
+Still needs `uv sync` and your Zotero credentials (see [Setup](#setup)).
 
 ## Usage
 
-**Everything defaults to a dry run** — scripts print an `old -> new` diff and
-write nothing until you pass `--apply`. Preview first, confirm, then apply.
+**Everything defaults to a dry run**: scripts print an `old -> new` diff and
+write nothing until you pass `--apply`.
 
 Run a single stage:
 
@@ -102,7 +92,7 @@ uv run run_pipeline.py --apply               # run it all for real
 
 Common flags on every stage: `--apply`, `--limit N`, `--verbose`.
 
-### Example: what a dry run looks like
+### What a dry run looks like
 
 ```text
 $ uv run scripts/15_clean_titles.py --limit 3
@@ -117,21 +107,16 @@ Would update 2/3 items.
 Re-run with --apply to write these changes.
 ```
 
-Nothing is written until you add `--apply`.
+### Driving it with the skill
 
-### Example: driving it with the skill
+With the plugin installed, describe the goal; the skill runs the right stages
+dry-run first and writes only after you confirm:
 
-With the plugin installed (see above), just describe what you want in plain
-language — the skill picks the right stages, previews the diff, and only writes
-after you confirm:
+> "Standardize my journal titles, but show me the preview first."
 
-> "Clean up my Zotero library — standardize the journal titles, but show me the
-> preview first."
+> "My published arXiv preprints are still typed as preprints — fix them and fetch the real DOIs."
 
-> "A bunch of my arXiv preprints have been published; retype them to journal
-> articles and fetch the real DOIs."
-
-> "Organize my unfiled references into the right collections."
+> "File my unfiled references into the right collections."
 
 ## The pipeline (order matters)
 
@@ -187,10 +172,10 @@ share the `zotcleanup.collections` layer (`Tree` + batched, dry-run-aware
 | 11 | `11_normalize_collection_names.py` | canonicalize leading numeric prefixes (`00Core` → `00 Core`) |
 | 12 | `12_merge_collections.py` | report collision-named collections; `--merge SRC DST` to fold one in |
 
-Stage 10 deliberately holds no classification logic: `--export` dumps unfiled
-items + a collection catalog, something intelligent writes an assignment map
+Stage 10 holds no classification logic: `--export` dumps unfiled items + a
+collection catalog, an external classifier writes an assignment map
 `{item_key: [collection_key, …]}`, and `--map` applies it (batched, additive,
-dry-run first). Swap in any classifier without touching the engine.
+dry-run first).
 
 ### Standalone stages & tools (not run by the pipeline)
 
