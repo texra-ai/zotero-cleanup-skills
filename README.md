@@ -1,12 +1,21 @@
+<div align="center">
+
 # zotcleanup
 
-A small, scriptable pipeline for cleaning up a personal [Zotero](https://www.zotero.org)
-reference library. It normalizes item types, backfills DOIs from arXiv, promotes
-published preprints to journal articles via Crossref, and standardizes journal
-metadata — using the [pyzotero](https://github.com/urschrei/pyzotero), arXiv, and
-Crossref APIs.
+**Point an AI agent at your Zotero library and let it fix the metadata** — wrong
+item types, missing DOIs, published preprints still marked preprint, inconsistent
+journal names — previewing every change before it writes.
 
-Independent, dry-run-safe scripts over a small shared helper package.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+&nbsp;![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+&nbsp;![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-d97757)
+&nbsp;![Codex plugin](https://img.shields.io/badge/Codex-plugin-000000)
+&nbsp;[![GitHub stars](https://img.shields.io/github/stars/texra-ai/zotero-cleanup-skills?style=social)](https://github.com/texra-ai/zotero-cleanup-skills/stargazers)
+
+</div>
+
+A Claude Code / Codex **skill** plus independent, **dry-run-safe** scripts, built
+on the [pyzotero](https://github.com/urschrei/pyzotero), arXiv, and Crossref APIs.
 
 ## Setup
 
