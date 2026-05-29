@@ -1,0 +1,32 @@
+# Secrets — never commit credentials
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Generated / personal library data — never commit. The cleanup scripts can
+# regenerate these, and they embed the user's library id, titles, abstracts
+# and item keys.
+scan_cache.json
+warnings.txt
+*_backup.json
+
+# Personal BibTeX inputs. import_bib.py accepts any .bib path argument, so local
+# reference files tend to live here; commit a deliberate fixture as example.bib.
+*.bib
+!example.bib
+
+# Claude Code machine-local state (the skill under .claude/skills/ is committed).
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
