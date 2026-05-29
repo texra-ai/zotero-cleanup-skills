@@ -1,5 +1,6 @@
 {
   "name": "zotcleanup",
+  "description": "A skill and scripts for cleaning up and normalizing a personal Zotero library",
   "owner": {
     "name": "LionSR"
   },
