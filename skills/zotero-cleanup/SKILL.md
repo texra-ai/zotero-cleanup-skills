@@ -48,6 +48,19 @@ export ZOTERO_LIBRARY_ID=...     # the numeric userID shown on that page
 or copy `.env.example` to `.env` and fill it in. Do **not** continue until the
 count check prints a number.
 
+## Choosing stages
+
+Most requests need only one or two stages — run those (dry-run first), not the
+whole pipeline, unless the user asks for a full sweep:
+
+- mistyped items (`document` / preprint / journalArticle confusion) → 01, 02, 20, 04
+- missing or placeholder DOIs → 03, 16, 19
+- title / name / `extra` cleanup → 15, 18, 17, 14
+- journal & conference metadata → 08, 05, 06, 13
+- folders / collections → 10, 11, 12
+
+Full sweep: `uv run run_pipeline.py` (data + hygiene; collection stages are separate).
+
 ## Run order (matters — each stage consumes what the previous produced)
 
 Run the whole thing with `uv run run_pipeline.py [--apply] [--limit N]`, or run
@@ -81,7 +94,7 @@ Why the order: documents must become preprints (01) before preprint stages can
 see them; DOIs must be fetched (03) before preprints can be promoted (04);
 stage 07 needs items already promoted to `journalArticle` before it can safely
 drop the arXiv line; title standardization (08) and category tagging (09) come
-after the type/data work; the hygiene stages (14–17) are mechanical scrubbers
+after the type/data work; the hygiene stages (14–18) are mechanical scrubbers
 that run last on whatever the data stages produced.
 
 ## Organizing collections (folders), not just item metadata
