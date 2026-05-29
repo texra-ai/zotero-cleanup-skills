@@ -17,6 +17,33 @@ journal names — previewing every change before it writes.
 A Claude Code / Codex **skill** plus independent, **dry-run-safe** scripts, built
 on the [pyzotero](https://github.com/urschrei/pyzotero), arXiv, and Crossref APIs.
 
+## What it fixes
+
+A working Zotero library accumulates rot:
+
+- arXiv preprints that were published long ago, still typed `preprint` (or `document`)
+- one journal under several names — `Phys Rev Lett`, `Physical Review Letters`, …
+- import gunk in titles and names — `{{braces}}`, `&amp;`, `SCHMIDT`, `M\"uller`
+- placeholder DOIs (ResearchGate `RG.…`, DataCite arXiv) that aren't the real one
+- hundreds of unfiled references
+
+zotcleanup fixes each in a pass you review first:
+
+```text
+$ uv run scripts/15_clean_titles.py --limit 3
+DRY-RUN — no writes: 3 candidate items
+
+[1/3] change Tensor Networks for {{Quantum}} Simulation
+           title: 'Tensor Networks for {{Quantum}} Simulation' -> 'Tensor Networks for Quantum Simulation'
+[2/3] change Entanglement &amp; Thermalization in Closed Systems
+           title: 'Entanglement &amp; Thermalization in Closed Systems' -> 'Entanglement & Thermalization in Closed Systems'
+
+Would update 2/3 items.
+Re-run with --apply to write these changes.
+```
+
+Nothing is written until you pass `--apply`.
+
 ## Setup
 
 Requires [uv](https://docs.astral.sh/uv/) and Python ≥ 3.10.
@@ -100,21 +127,6 @@ uv run run_pipeline.py --apply               # run it all for real
 ```
 
 Common flags on every stage: `--apply`, `--limit N`, `--verbose`.
-
-### What a dry run looks like
-
-```text
-$ uv run scripts/15_clean_titles.py --limit 3
-DRY-RUN — no writes: 3 candidate items
-
-[1/3] change Tensor Networks for {{Quantum}} Simulation
-           title: 'Tensor Networks for {{Quantum}} Simulation' -> 'Tensor Networks for Quantum Simulation'
-[2/3] change Entanglement &amp; Thermalization in Closed Systems
-           title: 'Entanglement &amp; Thermalization in Closed Systems' -> 'Entanglement & Thermalization in Closed Systems'
-
-Would update 2/3 items.
-Re-run with --apply to write these changes.
-```
 
 ### Driving it with the skill
 
