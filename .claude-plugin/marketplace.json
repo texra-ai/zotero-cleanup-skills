@@ -1,0 +1,14 @@
+{
+  "name": "zotcleanup",
+  "owner": {
+    "name": "LionSR"
+  },
+  "plugins": [
+    {
+      "name": "zotcleanup",
+      "description": "Clean up and normalize a personal Zotero library",
+      "version": "0.1.0",
+      "source": "./"
+    }
+  ]
+}

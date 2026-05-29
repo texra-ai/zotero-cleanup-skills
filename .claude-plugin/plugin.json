@@ -1,0 +1,11 @@
+{
+  "name": "zotcleanup",
+  "description": "Clean up and normalize a personal Zotero library (arXiv/Crossref metadata + collection tree)",
+  "version": "0.1.0",
+  "author": {
+    "name": "Sirui Lu"
+  },
+  "repository": "https://github.com/LionSR/zotcleanup",
+  "license": "MIT",
+  "keywords": ["zotero", "bibliography", "arxiv", "crossref", "metadata"]
+}

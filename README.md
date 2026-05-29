@@ -14,20 +14,26 @@ scripts that share a small helper package.
 Requires [uv](https://docs.astral.sh/uv/) and Python ≥ 3.10.
 
 ```bash
-uv sync                       # create the venv and install dependencies
-cp .env.example .env          # then edit .env with your own credentials
+uv sync   # create the venv and install dependencies
 ```
 
-Get an API key at <https://www.zotero.org/settings/keys>; your library ID is on
-the same page. `.env` is gitignored and must never be committed.
+Then provide your Zotero credentials. Real environment variables take precedence
+over a `.env` file, so either works — **exporting environment variables is
+recommended**, since it also works when the skill runs from another directory:
 
-```ini
-# .env
-ZOTERO_API_KEY=...
-ZOTERO_LIBRARY_ID=1234567
-ZOTERO_LIBRARY_TYPE=user
-# Optional: a contact email joins Crossref's faster "polite pool".
-CROSSREF_MAILTO=you@example.com
+```bash
+export ZOTERO_API_KEY=...           # get one at https://www.zotero.org/settings/keys
+export ZOTERO_LIBRARY_ID=1234567    # your userID, shown on that same page
+export ZOTERO_LIBRARY_TYPE=user
+export CROSSREF_MAILTO=you@example.com   # optional: joins Crossref's faster "polite pool"
+```
+
+Add those lines to your shell profile (`~/.zshrc`, `~/.bashrc`) to persist them.
+Or, when working inside this repo, use a local `.env` (gitignored — never commit
+it):
+
+```bash
+cp .env.example .env   # then edit it with the same keys
 ```
 
 Verify it works:
@@ -35,6 +41,44 @@ Verify it works:
 ```bash
 uv run python -c "from zotcleanup import get_client; print(get_client().count_items(), 'items')"
 ```
+
+## Use as an agent skill (Claude Code / Codex)
+
+This repo bundles the `zotero-cleanup` agent skill (in `skills/`) and ships it as
+a plugin, so an AI coding agent can drive the pipeline for you. Install it once
+and the skill is available in any project.
+
+### Claude Code
+
+```
+/plugin marketplace add LionSR/zotcleanup
+/plugin install zotcleanup@zotcleanup
+```
+
+### Codex
+
+```
+codex plugin marketplace add LionSR/zotcleanup
+```
+
+Then enable **Zotero Cleanup** in the Codex plugin browser.
+
+### Manual install
+
+Clone this repo and point your agent at the `skills/` directory — or symlink
+`skills/zotero-cleanup` into your agent's skills folder (`~/.claude/skills/` for
+Claude Code).
+
+### Update
+
+| Platform | Command |
+|----------|---------|
+| Claude Code | `/plugin update zotcleanup` |
+| Codex | `codex plugin marketplace upgrade zotcleanup` |
+| Manual install | `git pull` in the clone |
+
+The skill still needs the `zotcleanup` package installed (`uv sync`) and your
+Zotero credentials available (see [Setup](#setup)).
 
 ## Usage
 
@@ -153,14 +197,18 @@ Utilities under `scripts/tools/`:
 ## Layout
 
 ```
-zotcleanup/        shared package: client (.env config), helpers, CLI engine,
-                   collections (Tree + folder/membership operations)
+zotcleanup/        shared package: client (env / .env config), helpers, CLI
+                   engine, collections (Tree + folder/membership operations)
 scripts/           numbered stages 01–20: data/metadata (01–09), collection
                    organization (10–12), DBLP enrichment (13), hygiene (14–18),
                    DOI backfill (19), preprint-URL cleanup (20)
 scripts/tools/     opt-in / destructive utilities
+skills/            the zotero-cleanup agent skill (installable as a plugin)
 run_pipeline.py    runs the metadata + hygiene stages in order
                    (01, 02, 20, 03–09, 14–18); not 10–12, 13, or 19
+.claude-plugin/    Claude Code marketplace + plugin manifest
+.codex-plugin/     Codex plugin manifest
+.agents/           cross-agent marketplace manifest
 ```
 
 ## Customizing

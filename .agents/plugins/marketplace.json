@@ -1,0 +1,21 @@
+{
+  "name": "zotcleanup",
+  "interface": {
+    "displayName": "Zotero Cleanup"
+  },
+  "plugins": [
+    {
+      "name": "zotcleanup",
+      "version": "0.1.0",
+      "source": {
+        "source": "local",
+        "path": "../.."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "NONE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

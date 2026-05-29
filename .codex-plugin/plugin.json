@@ -1,0 +1,18 @@
+{
+  "name": "zotcleanup",
+  "version": "0.1.0",
+  "description": "Clean up and normalize a personal Zotero library (arXiv/Crossref metadata + collection tree)",
+  "author": {
+    "name": "Sirui Lu"
+  },
+  "repository": "https://github.com/LionSR/zotcleanup",
+  "license": "MIT",
+  "keywords": ["zotero", "bibliography", "arxiv", "crossref", "metadata"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Zotero Cleanup",
+    "shortDescription": "Clean up and normalize a personal Zotero library",
+    "longDescription": "A dry-run-safe pipeline of skills and scripts that normalizes Zotero item types, backfills DOIs from arXiv, promotes published preprints to journal articles via Crossref, standardizes journal metadata, and organizes the collection tree.",
+    "category": "Productivity"
+  }
+}

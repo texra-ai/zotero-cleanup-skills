@@ -27,6 +27,5 @@ warnings.txt
 *.bib
 !example.bib
 
-# Claude Code machine-local state (the skill under .claude/skills/ is committed).
-.claude/scheduled_tasks.lock
-.claude/settings.local.json
+# Agent machine-local state (the shipped skill now lives in skills/, not here).
+.claude/
