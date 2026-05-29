@@ -56,7 +56,7 @@ def transform(zot, item) -> Changes:
     ch = Changes(data)
     title = data.get("title") or ""
     if title:
-        ch.set("title", _clean(title))  # Changes.set no-ops when unchanged
+        ch.set("title", _clean(title))
     return ch
 
 

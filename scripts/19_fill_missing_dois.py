@@ -18,7 +18,6 @@ silently apply a wrong DOI.
 
 from __future__ import annotations
 
-import re
 import time
 
 from zotcleanup import (
@@ -31,19 +30,15 @@ from zotcleanup import (
     get_client,
     is_arxiv_placeholder_doi,
     is_researchgate_doi,
+    norm_title,
     retype,
 )
 from zotcleanup.helpers import _CROSSREF_SLEEP, _get_works
 
 
-def _norm_title(t: str) -> str:
-    t = re.sub(r"[^a-z0-9 ]+", " ", (t or "").lower())
-    return re.sub(r"\s+", " ", t).strip()
-
-
 def _titles_match(a: str, b: str) -> bool:
     """True when the normalized titles are equal or one contains the other."""
-    na, nb = _norm_title(a), _norm_title(b)
+    na, nb = norm_title(a), norm_title(b)
     if not na or not nb:
         return False
     return na == nb or na in nb or nb in na

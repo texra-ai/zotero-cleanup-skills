@@ -67,7 +67,6 @@ def _clean(extra: str) -> str:
 def transform(zot, item) -> Changes:
     data = item["data"]
     ch = Changes(data)
-    # Changes.set already records a diff only when the value actually changes.
     ch.set("extra", _clean(data.get("extra") or ""))
     return ch
 

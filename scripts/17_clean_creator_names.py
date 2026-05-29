@@ -113,8 +113,6 @@ def _is_candidate(item) -> bool:
             return True
         for k in ("lastName", "firstName", "name"):
             v = cr.get(k) or ""
-            if not v:
-                continue
             if "\\" in v or "{{" in v or _ALLCAPS_SURNAME.match(v) or _ET_AL.search(v):
                 return True
     return False

@@ -110,9 +110,12 @@ def _get_arxiv_client():
 _arxiv_cache: dict[str, object] = {}
 
 
+_ARXIV_VERSION_RE = re.compile(r"v\d+$")
+
+
 def _norm_arxiv_id(arxiv_id: str) -> str:
     """Normalize an id for cache keys: lowercase, no trailing version (``v2``)."""
-    return re.sub(r"v\d+$", "", (arxiv_id or "").strip().lower())
+    return _ARXIV_VERSION_RE.sub("", (arxiv_id or "").strip().lower())
 
 
 def prefetch_arxiv(ids: Iterable[str], batch_size: int = 50) -> None:
@@ -329,6 +332,18 @@ def is_arxiv_placeholder_doi(doi: Optional[str]) -> bool:
 # --------------------------------------------------------------------------- #
 # Pure string utilities
 # --------------------------------------------------------------------------- #
+
+
+def norm_title(t: str) -> str:
+    """Normalize a title for fuzzy matching: lowercase, replace non-alphanumeric
+    runs with single spaces, collapse whitespace.
+
+    Used by stages 13/19 and ``tools/import_bib.py`` to compare titles across
+    arXiv / Crossref / DBLP, where punctuation and spacing differ but the words
+    are the same. Idempotent.
+    """
+    collapsed = re.sub(r"[^a-z0-9 ]+", " ", (t or "").lower())
+    return re.sub(r"\s+", " ", collapsed).strip()
 
 
 def split_list(seq, size: int = 50) -> Iterator[list]:

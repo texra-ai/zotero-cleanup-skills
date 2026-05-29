@@ -19,7 +19,7 @@ import argparse
 import re
 from pathlib import Path
 
-from zotcleanup import fetch_items, get_client
+from zotcleanup import fetch_items, get_client, norm_title
 from zotcleanup.helpers import latex_to_unicode, strip_bbt_braces
 
 _MONTHS = {
@@ -224,11 +224,6 @@ def build_item(zot, entry: dict) -> dict:
 # --------------------------------------------------------------------------- #
 
 
-def _norm_title(t: str) -> str:
-    t = re.sub(r"[^a-z0-9 ]+", " ", (t or "").lower())
-    return re.sub(r"\s+", " ", t).strip()
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("path", type=Path, help="Path to the .bib file")
@@ -241,12 +236,12 @@ def main() -> None:
 
     zot = get_client()
     library = fetch_items(zot)
-    seen_titles = {_norm_title(it["data"].get("title", "")) for it in library}
+    seen_titles = {norm_title(it["data"].get("title", "")) for it in library}
 
     new_items, skipped = [], []
     for e in entries:
         title = _clean(e.get("title", ""))
-        if _norm_title(title) in seen_titles:
+        if norm_title(title) in seen_titles:
             skipped.append(title)
             continue
         new_items.append(build_item(zot, e))

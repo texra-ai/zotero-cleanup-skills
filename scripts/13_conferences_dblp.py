@@ -39,15 +39,11 @@ from zotcleanup import (
     fetch_items,
     get_client,
     is_arxiv_placeholder_doi,
+    norm_title,
 )
 
 TITLE_MIN = 0.90  # fuzzy-title ratio below which we don't even consider a hit
 FILL_FIELDS = ("DOI", "proceedingsTitle", "date", "pages", "volume")
-
-
-def _norm_title(s: str) -> str:
-    s = (s or "").lower().strip().rstrip(".")
-    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", s)).strip()
 
 
 def _year(s: str) -> int | None:
@@ -97,9 +93,9 @@ def best_match(title: str, hits: list[dict]) -> tuple[dict | None, float]:
     slightly lower title ratio than its arXiv twin; only if none is published do
     we fall back to the best raw match.
     """
-    want = _norm_title(title)
+    want = norm_title(title)
     scored = sorted(
-        ((SequenceMatcher(None, want, _norm_title(i.get("title", ""))).ratio(), i)
+        ((SequenceMatcher(None, want, norm_title(i.get("title", ""))).ratio(), i)
          for i in hits),
         key=lambda x: x[0],
         reverse=True,
