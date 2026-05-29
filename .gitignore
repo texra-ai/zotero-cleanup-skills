@@ -29,3 +29,6 @@ warnings.txt
 
 # Agent machine-local state (the shipped skill now lives in skills/, not here).
 .claude/
+
+# Local notes (launch copy, scratch) — not for the public repo.
+PROMO.md
