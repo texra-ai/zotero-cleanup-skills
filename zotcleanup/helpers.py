@@ -181,7 +181,8 @@ def _get_works():
             from crossref.restful import Etiquette
 
             etiquette = Etiquette(
-                "zotcleanup", "0.1.0", "https://github.com/LionSR/zotcleanup", mailto
+                "zotcleanup", "0.1.0",
+                "https://github.com/texra-ai/zotero-cleanup-skills", mailto
             )
             _works = Works(etiquette=etiquette)
         else:
@@ -246,7 +247,7 @@ def _get_dblp_session():
     if _dblp_session is None:
         _dblp_session = requests.Session()
         _dblp_session.headers["User-Agent"] = (
-            "zotcleanup/0.1 (https://github.com/LionSR/zotcleanup)"
+            "zotcleanup/0.1 (https://github.com/texra-ai/zotero-cleanup-skills)"
         )
     return _dblp_session
 

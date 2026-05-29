@@ -5,7 +5,7 @@
   "author": {
     "name": "Sirui Lu"
   },
-  "repository": "https://github.com/LionSR/zotcleanup",
+  "repository": "https://github.com/texra-ai/zotero-cleanup-skills",
   "license": "MIT",
   "keywords": ["zotero", "bibliography", "arxiv", "crossref", "metadata"]
 }

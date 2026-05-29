@@ -38,8 +38,10 @@ def get_client() -> zotero.Zotero:
         raise ConfigError(
             "Missing required Zotero credentials: "
             + ", ".join(missing)
-            + ".\nCopy .env.example to .env and fill in your values "
-            "(get a key at https://www.zotero.org/settings/keys)."
+            + ".\nSet them as environment variables, for example:\n"
+            "  export ZOTERO_API_KEY=...      # https://www.zotero.org/settings/keys\n"
+            "  export ZOTERO_LIBRARY_ID=...   # your numeric userID, on that page\n"
+            "or copy .env.example to .env and fill in the values."
         )
 
     if not library_id.isdigit():

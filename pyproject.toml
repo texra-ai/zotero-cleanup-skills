@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/LionSR/zotcleanup"
+Homepage = "https://github.com/texra-ai/zotero-cleanup-skills"
 
 [build-system]
 requires = ["hatchling"]

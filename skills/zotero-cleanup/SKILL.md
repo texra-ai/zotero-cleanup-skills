@@ -26,17 +26,27 @@ without writing. The real library is at stake and some stages are slow.
 
 Never run `--apply` against the live library without explicit user confirmation.
 
-## Pre-flight
+## Pre-flight — credentials (stop if missing)
 
-Credentials come from a gitignored `.env` (see `.env.example`):
-`ZOTERO_API_KEY`, `ZOTERO_LIBRARY_ID`, `ZOTERO_LIBRARY_TYPE`. Confirm it works:
+Credentials come from **environment variables** (preferred) or a gitignored
+`.env` (see `.env.example`): `ZOTERO_API_KEY`, `ZOTERO_LIBRARY_ID`, and the
+optional `ZOTERO_LIBRARY_TYPE` (default `user`). **Check first, every time, and
+STOP if they're missing** — never run a stage against a library you can't reach:
 
 ```bash
 uv run python -c "from zotcleanup import get_client; print(get_client().count_items(), 'items')"
 ```
 
-If that raises `ConfigError`, the user must create `.env` from `.env.example`
-(and get a key at https://www.zotero.org/settings/keys).
+If that raises `ConfigError`, the credentials aren't set. Tell the user exactly
+which variables are missing and how to fix it — either export them:
+
+```bash
+export ZOTERO_API_KEY=...        # https://www.zotero.org/settings/keys
+export ZOTERO_LIBRARY_ID=...     # the numeric userID shown on that page
+```
+
+or copy `.env.example` to `.env` and fill it in. Do **not** continue until the
+count check prints a number.
 
 ## Run order (matters — each stage consumes what the previous produced)
 

@@ -51,14 +51,14 @@ and the skill is available in any project.
 ### Claude Code
 
 ```
-/plugin marketplace add LionSR/zotcleanup
+/plugin marketplace add texra-ai/zotero-cleanup-skills
 /plugin install zotcleanup@zotcleanup
 ```
 
 ### Codex
 
 ```
-codex plugin marketplace add LionSR/zotcleanup
+codex plugin marketplace add texra-ai/zotero-cleanup-skills
 ```
 
 Then enable **Zotero Cleanup** in the Codex plugin browser.
@@ -101,6 +101,37 @@ uv run run_pipeline.py --apply               # run it all for real
 ```
 
 Common flags on every stage: `--apply`, `--limit N`, `--verbose`.
+
+### Example: what a dry run looks like
+
+```text
+$ uv run scripts/15_clean_titles.py --limit 3
+DRY-RUN — no writes: 3 candidate items
+
+[1/3] change Tensor Networks for {{Quantum}} Simulation
+           title: 'Tensor Networks for {{Quantum}} Simulation' -> 'Tensor Networks for Quantum Simulation'
+[2/3] change Entanglement &amp; Thermalization in Closed Systems
+           title: 'Entanglement &amp; Thermalization in Closed Systems' -> 'Entanglement & Thermalization in Closed Systems'
+
+Would update 2/3 items.
+Re-run with --apply to write these changes.
+```
+
+Nothing is written until you add `--apply`.
+
+### Example: driving it with the skill
+
+With the plugin installed (see above), just describe what you want in plain
+language — the skill picks the right stages, previews the diff, and only writes
+after you confirm:
+
+> "Clean up my Zotero library — standardize the journal titles, but show me the
+> preview first."
+
+> "A bunch of my arXiv preprints have been published; retype them to journal
+> articles and fetch the real DOIs."
+
+> "Organize my unfiled references into the right collections."
 
 ## The pipeline (order matters)
 
