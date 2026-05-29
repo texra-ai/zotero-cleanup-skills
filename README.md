@@ -132,28 +132,28 @@ articles to preprints so stage 03 can then fetch their DOIs.
 
 ### Data & metadata stages
 
-| # | Script | Purpose |
-|---|--------|---------|
-| 01 | `01_documents_to_preprints.py` | `document` + arXiv URL/id → `preprint` |
-| 02 | `02_arxiv_journals_to_preprints.py` | arXiv-mislabelled journal articles → `preprint` / real DOI |
-| 20 | `20_clean_journal_preprint_urls.py` | clear leftover arXiv/bioRxiv URLs on journal articles (or demote mis-typed ones) |
-| 03 | `03_preprints_fetch_doi.py` | fetch arXiv DOI + category; tidy category brackets |
-| 04 | `04_preprints_to_journals.py` | preprints with a real DOI → `journalArticle` (Crossref) |
-| 05 | `05_conferences.py` | conference papers: retype duplicates, fill proceedings, NeurIPS abbrev |
-| 06 | `06_journal_metadata_fixes.py` | fix issue numbers, page numbers, clean `extra` |
-| 07 | `07_strip_arxiv_from_journals.py` | strip the arXiv line from published articles' `extra` |
-| 08 | `08_standardize_journal_titles.py` | canonical journal titles + abbreviations |
-| 09 | `09_tag_arxiv_categories.py` | tag `[primary_category]` into `extra` for any item with an arXiv id |
+| # | Script | Purpose | Example (before → after) |
+|---|--------|---------|--------------------------|
+| 01 | `01_documents_to_preprints.py` | `document` + arXiv URL/id → `preprint` | `document` "GPT-4 Technical Report", url `arxiv.org/abs/2303.08774` → `preprint` |
+| 02 | `02_arxiv_journals_to_preprints.py` | arXiv-mislabelled journal article → `preprint` / real DOI | `journalArticle`, publicationTitle `"arXiv:2106.09685"` → `preprint` |
+| 20 | `20_clean_journal_preprint_urls.py` | clear leftover preprint URL (else demote) | `journalArticle` with DOI, url `arxiv.org/abs/1810.04805` → url cleared |
+| 03 | `03_preprints_fetch_doi.py` | fetch arXiv DOI + primary category | `preprint` `arXiv:2007.14822` → DOI `10.48550/arXiv.2007.14822`, extra `[quant-ph]` |
+| 04 | `04_preprints_to_journals.py` | published preprint → `journalArticle` (Crossref) | `preprint` DOI `10.1103/PhysRevLett.130.010801` → `journalArticle` "Physical Review Letters" 130, 010801 |
+| 05 | `05_conferences.py` | dedupe / fill conference papers | proceedingsTitle `"Advances in Neural Information Processing Systems 36"` → `"NeurIPS"` |
+| 06 | `06_journal_metadata_fixes.py` | fix issue / page numbers | pages `""` → `"L021003"` (Crossref article number) |
+| 07 | `07_strip_arxiv_from_journals.py` | strip the arXiv line from `extra` | `extra` line `"arXiv: 2103.00020 [cs.LG]"` → removed |
+| 08 | `08_standardize_journal_titles.py` | canonical title + abbreviation | `"Phys Rev Lett"` → `"Physical Review Letters"` + abbr `"Phys. Rev. Lett."` |
+| 09 | `09_tag_arxiv_categories.py` | tag `[primary_category]` into `extra` | item with arXiv id `2106.09685` → `extra` gains `[cs.LG]` |
 
 ### Hygiene stages (mechanical scrubbers, run last)
 
-| # | Script | Purpose |
-|---|--------|---------|
-| 14 | `14_clean_extra.py` | strip importer cruft (`Citation Key:`, stray `Issue:`/`Volume:` lines, …) from `extra` |
-| 15 | `15_clean_titles.py` | strip BetterBibTeX braces + HTML entities from titles |
-| 16 | `16_resolve_placeholder_dois.py` | replace ResearchGate / arXiv placeholder DOIs with the real publisher DOI (Crossref) |
-| 17 | `17_clean_creator_names.py` | clean author/editor names: LaTeX→Unicode, BBT braces, ALL-CAPS surnames |
-| 18 | `18_capitalize_proper_nouns.py` | capitalize curated proper nouns + acronyms in titles |
+| # | Script | Purpose | Example (before → after) |
+|---|--------|---------|--------------------------|
+| 14 | `14_clean_extra.py` | strip importer cruft from `extra` | `extra` line `"Citation Key: lu2023"` → removed |
+| 15 | `15_clean_titles.py` | strip BetterBibTeX braces + HTML entities | `"{{Quantum}} Error &amp; Correction"` → `"Quantum Error & Correction"` |
+| 16 | `16_resolve_placeholder_dois.py` | placeholder DOI → real publisher DOI (Crossref) | `"10.13140/RG.2.2.12345"` → `"10.1103/PhysRevX.13.041023"` |
+| 17 | `17_clean_creator_names.py` | clean author/editor names | lastName `"SMITH"` → `"Smith"`; `"M\"uller"` → `"Müller"` |
+| 18 | `18_capitalize_proper_nouns.py` | capitalize proper nouns + acronyms | `"a markov study of nmr"` → `"a Markov study of NMR"` |
 
 Stages 05 and 06 take an optional sub-action (default `all`):
 `05_conferences.py {convert-duplicates,fill-proceedings,standardize-neurips,all}`,
@@ -166,11 +166,11 @@ share the `zotcleanup.collections` layer (`Tree` + batched, dry-run-aware
 `create`/`rename`/`add_items`/`merge`) and are run individually, not by
 `run_pipeline.py`.
 
-| # | Script | Purpose |
-|---|--------|---------|
-| 10 | `10_organize_unfiled.py` | file unfiled references: `--export f.json`, then `--map f.json [--apply]` |
-| 11 | `11_normalize_collection_names.py` | canonicalize leading numeric prefixes (`00Core` → `00 Core`) |
-| 12 | `12_merge_collections.py` | report collision-named collections; `--merge SRC DST` to fold one in |
+| # | Script | Purpose | Example |
+|---|--------|---------|---------|
+| 10 | `10_organize_unfiled.py` | file unfiled references (`--export f.json`, then `--map f.json [--apply]`) | unfiled "Adam: A Method for Stochastic Optimization" → added to `01 Optimization` |
+| 11 | `11_normalize_collection_names.py` | canonicalize leading numeric prefixes | `"00Core"` → `"00 Core"` |
+| 12 | `12_merge_collections.py` | merge collision-named collections (`--merge SRC DST`) | sibling collections `"QEC"` + `"Qec"` → one |
 
 Stage 10 holds no classification logic: `--export` dumps unfiled items + a
 collection catalog, an external classifier writes an assignment map
@@ -187,11 +187,15 @@ Numbered stages that exist but aren't wired into `run_pipeline.py`:
   date / pages / volume; year-or-author disagreements are reported as SUSPECT
   and left untouched. Run before stage 05 `fill-proceedings` (its DOIs feed the
   Crossref publisher/place fill). Flags: `--only-missing`, `--canonical-venue`.
+  Example: `conferencePaper` "Llemma: An Open Language Model for Mathematics" →
+  DOI + proceedingsTitle `"ICLR"` + pages, from the verified DBLP record.
 - `scripts/19_fill_missing_dois.py` — recover identity of under-specified
   journal articles. `demote-shells` retypes DOI-less, title-less
   `journalArticle`s to `preprint` (via an arXiv title search); `fill-dois` sets
   a missing DOI from a confident DBLP/Crossref title match. Sub-actions:
   `{demote-shells,fill-dois,all}` (default `all`).
+  Example: a `journalArticle` with no DOI and no venue → `preprint`; one with a
+  title but no DOI → DOI filled from a DBLP/Crossref match.
 
 Utilities under `scripts/tools/`:
 
