@@ -26,6 +26,7 @@ A working Zotero library accumulates rot:
 - import gunk in titles and names — `{{braces}}`, `&amp;`, `SCHMIDT`, `M\"uller`
 - placeholder DOIs (ResearchGate `RG.…`, DataCite arXiv) that aren't the real one
 - hundreds of unfiled references
+- AI agents that hallucinate citations off a messy library — a verified one gives them real DOIs and venues to cite
 
 zotcleanup fixes each in a pass you review first:
 
@@ -42,7 +43,8 @@ Would update 2/3 items.
 Re-run with --apply to write these changes.
 ```
 
-Nothing is written until you pass `--apply`.
+Nothing is written until you pass `--apply`. Every value is looked up from a named
+authority (arXiv, Crossref, DBLP) above a match threshold — never guessed.
 
 ## Setup
 
